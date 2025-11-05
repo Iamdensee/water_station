@@ -208,7 +208,7 @@
 
 <script src="styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script src="jquery.js"></script>
-<script src="crud/js/sign_up_customers.js"></script>
+<script src="auth/js/sign_up_customers.js"></script>
 <script>
    $("#form-signup").submit(function (e) {
       e.preventDefault();

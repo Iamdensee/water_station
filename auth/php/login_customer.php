@@ -14,6 +14,8 @@ if ($customer !== false) {
     if (password_verify($password, $customer["password"])) {
         $_SESSION["customer_id"] = $customer["customer_id"];
         $_SESSION["customer_name"] = $customer["first_name"];
+        $_SESSION["customer_address"] = $customer["address"];
+        $_SESSION["customer_number"] = $customer["contact_number"];
         echo "granted";
     } else {
         echo "incorrect password/username";
