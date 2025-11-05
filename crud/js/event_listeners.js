@@ -11,20 +11,20 @@ $(document).on('click', '.order-btn', function () {
    $(document).on('keyup', '#quantity', function () {
       let quantity = $("#quantity").val();
       total_price_placeholder.html('<strong>Total Price: </strong>' + '₱' + price * quantity);
-   })
+   });
 
    $(document).on('click', '#quantity', function () {
       let quantity = $("#quantity").val();
       total_price_placeholder.html('<strong>Total Price: </strong>' + '₱' + price * quantity);
-   })
+   });
 
 
-})
+});
 
 //checkout button
 $(document).on('click', '.checkout-btn', function() {
    $("#order-id").val($(this).data("order-id"));
-})
+});
 
 //mode of payment dropdown
 $(document).on('change', '#payment-method', function () {
@@ -35,4 +35,12 @@ $(document).on('change', '#payment-method', function () {
       $('#e-wallet-section').slideUp(200);
       $('#e-wallet-number').prop('disabled', true);
    }
+});
+
+
+//deliver button
+$(document).on('click', '.deliver-btn', function() {
+   let order_id = $(this).data("order-id");
+
+   add_delivery(order_id);
 });

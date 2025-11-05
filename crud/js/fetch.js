@@ -61,9 +61,53 @@ function fetch_customer_orders() {
       $("#orders").html(list);
 
       order.forEach(orders => {
-         if (orders.status === "Pending") {
+         if (orders.status === "Pending" || orders.status === "Out for Delivery") {
             $(`.checkout-btn[data-order-id='${orders.order_id}']`).prop("disabled", true);
          }
       });
    });
+}
+
+
+function fetch_pending_orders() {
+   $.get("../crud/php/fetch_pending_orders.php", function (response) {
+      let pending_order = JSON.parse(response);
+      let pending_list = "";
+
+      if (pending_order.length > 0) {
+         pending_order.forEach(pending_orders => {
+            pending_list += `
+               <li>
+                  <div class="order-info">
+                     <h3><strong>Order:</strong> ${pending_orders.order_id}</h3>
+                     <p><strong>Customer:</strong> ${pending_orders.customer_name}</p>
+                     <p><strong>Address:</strong> ${pending_orders.address}</p>
+                     <p><strong>Total Price:</strong> ₱${pending_orders.total_amount}</p>
+                     <p><strong>Payment Method:</strong> ${pending_orders.payment_method}</p>
+                     <p><strong>Status:</strong> <span class="order-status status-pending">${pending_orders.status}</span></p>
+                  </div>
+                  <div class="action-btns">
+                     <button class="btn btn-success btn-md deliver-btn" data-order-id="${pending_orders.order_id}">Deliver</button>
+                  </div>
+               </li>`;
+         });
+
+         $("#orders").html(pending_list);
+      } else {
+         pending_list = `<li>
+            <div class="order-info">
+               No more pending orders
+            </div>
+         </li>`
+         $("#orders").html(pending_list);
+      }
+
+   });
+}
+
+
+function fetch_deliveries() {
+   $.get("", function(response) {
+      alert(response);
+   })
 }

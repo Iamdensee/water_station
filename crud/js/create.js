@@ -25,7 +25,12 @@ function checkout_order(order_id, payment_method, contact, e_wallet) {
             contact: contact,
 
          }, function (response) {
-            alert(response);
+            if (response === "success") {
+               alert("Order Successfully Placed!");
+               fetch_customer_orders();
+            } else {
+               alert("Something went wrong")
+            };
          })
 
    } else if (payment_method === "Gcash") {
@@ -43,4 +48,17 @@ function checkout_order(order_id, payment_method, contact, e_wallet) {
       alert("Select payment method");
    }
 
+}
+
+
+function add_delivery(order_id) {
+   $.post("../crud/php/add_delivery.php", {order_id: order_id}, function(response) {
+      if (response === "success") {
+         alert("Delivery added!");
+         fetch_pending_orders();
+         window.location.href="staff_delivery.php"; 
+      } else {
+         alert(response);
+      }
+   }) 
 }

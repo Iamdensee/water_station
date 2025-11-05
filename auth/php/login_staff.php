@@ -14,6 +14,7 @@ if ($staff !== false) {
     if (password_verify($password, $staff["password"])) {
         $_SESSION["staff_id"] = $staff["staff_id"];
         $_SESSION["staff_name"] = $staff["first_name"];
+        $_SESSION["staff_station"] = $staff["station_id"];
         echo "granted";
     } else {
         echo "incorrect password/username";

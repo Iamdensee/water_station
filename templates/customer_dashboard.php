@@ -16,7 +16,8 @@ if (!isset($_SESSION["customer_id"])) {
    <link rel="stylesheet" href="../styles/bootstrap-5.3.8-dist/css/bootstrap.min.css">
 
    <!-- Google Fonts -->
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Quicksand:wght@600&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Quicksand:wght@600&display=swap"
+      rel="stylesheet">
 
    <style>
       body {
@@ -181,14 +182,16 @@ if (!isset($_SESSION["customer_id"])) {
       </div>
    </div>
 
-   <script src="../jquery.js"></script>
-   <script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-   <script>
-      // Force reload when returning to page
-      window.addEventListener("pageshow", function(event) {
-         if (event.persisted) window.location.reload();
-      });
-   </script>
+
 </body>
 
 </html>
+
+<script src="../jquery.js"></script>
+<script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+   // Force reload when returning to page
+   window.addEventListener("pageshow", function (event) {
+      if (event.persisted) window.location.reload();
+   });
+</script>

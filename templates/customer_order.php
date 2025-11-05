@@ -265,6 +265,7 @@ if (!isset($_SESSION["customer_id"])) {
 <script src="../jquery.js"></script>
 <script src="../crud/js/create.js"></script>
 <script src="../crud/js/fetch.js"></script>
+<script src="../crud/js/event_listeners.js"></script>
 <script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script>
    let customer_number = '<?php echo $_SESSION["customer_number"] ?>';
