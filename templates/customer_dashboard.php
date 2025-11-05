@@ -149,7 +149,7 @@ if (!isset($_SESSION["customer_id"])) {
       <ul class="nav-links">
          <li><a href="customer_dashboard.php" class="nav-link active">🏠 Home</a></li>
          <li><a href="customer_order.php" class="nav-link">🛒 Order</a></li>
-         <li><a href="#" class="nav-link">📦 My Orders</a></li>
+         <li><a href="customer_check_orders.php" class="nav-link">📦 My Orders</a></li>
          <li><a href="#" class="nav-link">🔔 Notifications</a></li>
          <li><a href="#" class="nav-link">👤 My Account</a></li>
          <li><a href="../auth/php/logout.php" class="nav-link text-danger">🚪 Logout</a></li>

@@ -206,7 +206,7 @@ if (!isset($_SESSION["customer_id"])) {
       <ul class="nav-links">
          <li><a href="customer_dashboard.php" class="nav-link">🏠 Home</a></li>
          <li><a href="customer_order.php" class="nav-link active">🛒 Order</a></li>
-         <li><a href="#" class="nav-link">📦 My Orders</a></li>
+         <li><a href="customer_check_orders.php" class="nav-link">📦 My Orders</a></li>
          <li><a href="#" class="nav-link">🔔 Notifications</a></li>
          <li><a href="#" class="nav-link">👤 My Account</a></li>
          <li><a href="../auth/php/logout.php" class="nav-link text-danger">🚪 Logout</a></li>
@@ -219,25 +219,38 @@ if (!isset($_SESSION["customer_id"])) {
    </div>
 
    <div class="modal fade" id="customer_order" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h5 class="modal-title"> Order Water </h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-dialog modal-md modal-dialog-centered">
+         <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+            <div class="modal-header bg-primary text-white">
+               <h5 class="modal-title">🛒 Place Your Order</h5>
+               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-               <form id="form-add-order">
-                  <input type="number" placeholder="Quantity" id="quantity" required>
-                  <select id="mode-of-payment">
-                     <option value=""> - Mode of Payment - </option>
-                     <option value="cod"> COD (Cash on Delivery) </option>
-                     <option value="g-cash"> GCash </option>
-                  </select>
-                  <input type="text" placeholder="GCash No." id="e-wallet-number"
-                     value="<?php echo $_SESSION["customer_number"] ?>" required>
-                  <input type="text" placeholder="Address" id="address"
-                     value="<?php echo $_SESSION["customer_address"] ?>">
-                  <button type="submit" class="btn btn-outline-success"> Place Order </button>
+
+            <div class="modal-body text-dark bg-light">
+               <h6 class="fw-semibold mb-3 text-center" id="station-name-placeholder">Water Station Name</h6>
+
+               <form id="form-add-order" class="d-flex flex-column gap-3">
+                  <input type="hidden" id="station_id">
+
+                  <div>
+                     <label for="quantity" class="form-label mb-1 fw-medium">Quantity (Gallons)</label>
+                     <input type="number" class="form-control" id="quantity" min="1" placeholder="Enter quantity"
+                        required>
+                  </div>
+
+                  <div>
+                     <label for="address" class="form-label mb-1 fw-medium">Delivery Address</label>
+                     <input type="text" class="form-control" id="address"
+                        value="<?php echo $_SESSION['customer_address']; ?>" required>
+                  </div>
+
+                  <p id="total-price-placeholder" class="mt-2 text-center fw-semibold text-success">
+                     Total Price: ₱0
+                  </p>
+
+                  <div class="text-center mt-3">
+                     <button type="submit" class="btn btn-outline-success px-4 fw-semibold">Confirm Order</button>
+                  </div>
                </form>
             </div>
          </div>
@@ -250,13 +263,22 @@ if (!isset($_SESSION["customer_id"])) {
 </html>
 
 <script src="../jquery.js"></script>
+<script src="../crud/js/create.js"></script>
 <script src="../crud/js/fetch.js"></script>
-<script src="../crud/js/event_listeners.js"></script>
 <script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script>
    let customer_number = '<?php echo $_SESSION["customer_number"] ?>';
-
    fetch_stations();
+
+   $("#form-add-order").submit(function (e) {
+      e.preventDefault();
+
+      let station_id = $("#station_id").val();
+      let quantity = $("#quantity").val().trim();
+      let address = $("#address").val().trim();
+
+      add_orders(station_id, quantity, address);
+   })
 
    window.addEventListener("pageshow", function (event) {
       if (event.persisted) window.location.reload();
