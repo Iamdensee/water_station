@@ -7,6 +7,7 @@ if (!isset($_SESSION["customer_id"])) {
 ?>
 
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -14,10 +15,7 @@ if (!isset($_SESSION["customer_id"])) {
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>My Orders</title>
    <link rel="stylesheet" href="../styles/bootstrap-5.3.8-dist/css/bootstrap.min.css">
-
-   <!-- Google Fonts (same as Login & Order pages) -->
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Quicksand:wght@600&display=swap"
-      rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Quicksand:wght@600&display=swap" rel="stylesheet">
 
    <style>
       body {
@@ -38,9 +36,6 @@ if (!isset($_SESSION["customer_id"])) {
          flex-direction: column;
          align-items: stretch;
          box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
-         flex-shrink: 0;
-
-         /* Fixed sidebar */
          position: fixed;
          top: 0;
          left: 0;
@@ -100,7 +95,6 @@ if (!isset($_SESSION["customer_id"])) {
          flex-grow: 1;
          padding: 2rem;
          margin-left: 250px;
-         /* space for fixed sidebar */
          overflow-y: auto;
          height: 100vh;
       }
@@ -111,7 +105,7 @@ if (!isset($_SESSION["customer_id"])) {
          margin-bottom: 2rem;
       }
 
-      /* Order List (same as stations list) */
+      /* Order Card Styling */
       ul#orders {
          list-style: none;
          padding: 0;
@@ -127,10 +121,6 @@ if (!isset($_SESSION["customer_id"])) {
          color: #fff;
          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
          transition: transform 0.3s ease, background 0.3s ease;
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
-         flex-wrap: wrap;
       }
 
       ul#orders li:hover {
@@ -138,25 +128,22 @@ if (!isset($_SESSION["customer_id"])) {
          transform: translateY(-5px);
       }
 
-      .order-info {
-         flex: 1;
+      .order-header {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         margin-bottom: 0.5rem;
       }
 
-      .order-info strong {
+      .order-header strong {
          font-family: 'Quicksand', sans-serif;
          font-size: 1.2rem;
-         display: block;
-         margin-bottom: 0.3rem;
-      }
-
-      .order-info p {
-         margin: 0.2rem 0;
-         font-size: 0.95rem;
       }
 
       .order-status {
          font-weight: 600;
          text-transform: capitalize;
+         font-size: 1rem;
       }
 
       .status-pending {
@@ -171,11 +158,19 @@ if (!isset($_SESSION["customer_id"])) {
          color: #ff4d4d;
       }
 
-      @media (max-width: 768px) {
-         ul#orders li {
-            flex-direction: column;
-            align-items: flex-start;
-         }
+      .divider {
+         height: 2px;
+         background-color: rgba(255, 255, 255, 0.2);
+         margin: 0.5rem 0 1rem;
+      }
+
+      .order-body p {
+         margin: 0.25rem 0;
+         font-size: 0.95rem;
+      }
+
+      .order-body button {
+         margin-top: 1rem;
       }
 
       @media (max-width: 992px) {
@@ -205,6 +200,7 @@ if (!isset($_SESSION["customer_id"])) {
          }
       }
    </style>
+
 </head>
 
 <body>
@@ -212,20 +208,23 @@ if (!isset($_SESSION["customer_id"])) {
       <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile">
       <h4><?php echo ($_SESSION['customer_name']); ?></h4>
 
-      <ul class="nav-links">
-         <li><a href="customer_dashboard.php" class="nav-link">🏠 Home</a></li>
-         <li><a href="customer_order.php" class="nav-link">🛒 Order</a></li>
-         <li><a href="customer_check_orders.php" class="nav-link active">📦 My Orders</a></li>
-         <li><a href="#" class="nav-link">🔔 Notifications</a></li>
-         <li><a href="#" class="nav-link">👤 My Account</a></li>
-         <li><a href="../auth/php/logout.php" class="nav-link text-danger">🚪 Logout</a></li>
-      </ul>
+  <ul class="nav-links">
+     <li><a href="customer_dashboard.php" class="nav-link">🏠 Home</a></li>
+     <li><a href="customer_order.php" class="nav-link">🛒 Order</a></li>
+     <li><a href="customer_check_orders.php" class="nav-link active">📦 My Orders</a></li>
+     <li><a href="#" class="nav-link">🔔 Notifications</a></li>
+     <li><a href="#" class="nav-link">👤 My Account</a></li>
+     <li><a href="../auth/php/logout.php" class="nav-link text-danger">🚪 Logout</a></li>
+  </ul>
+
    </div>
 
    <div class="main-content">
       <h1>📦 My Orders</h1>
       <ul id="orders"></ul>
    </div>
+
+   <!-- Checkout Modal -->
 
    <div class="modal fade" id="checkout_order" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-md modal-dialog-centered">
@@ -235,76 +234,72 @@ if (!isset($_SESSION["customer_id"])) {
                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body bg-light text-dark">
-               <form id="form-checkout-order" class="d-flex flex-column gap-3">
+        <div class="modal-body bg-light text-dark">
+           <form id="form-checkout-order" class="d-flex flex-column gap-3">
+              <input type="text" id="order-id" hidden>
 
-                  <!-- Payment Method -->
+              <div>
+                 <label for="payment-method" class="form-label fw-semibold">Payment Method</label>
+                 <select id="payment-method" class="form-select" required>
+                    <option value="">-- Select Mode of Payment --</option>
+                    <option value="Gcash">Gcash</option>
+                    <option value="COD">Cash on Delivery</option>
+                 </select>
+              </div>
 
-                  <input type="text" id="order-id" hidden>
+              <div>
+                 <label for="contact-number" class="form-label fw-semibold">Contact Number</label>
+                 <input type="text" id="contact-number" class="form-control" placeholder="09xxxxxxxxx"
+                    pattern="^09\d{9}$" value="<?php echo $_SESSION['customer_number']; ?>" required>
+              </div>
 
-                  <div>
-                     <label for="payment-method" class="form-label fw-semibold">Payment Method</label>
-                     <select id="payment-method" class="form-select" required>
-                        <option value="">-- Select Mode of Payment --</option>
-                        <option value="Gcash">Gcash</option>
-                        <option value="COD">Cash on Delivery</option>
-                     </select>
-                  </div>
+              <div id="e-wallet-section" style="display: none;">
+                 <label for="e-wallet-number" class="form-label fw-semibold">E-Wallet Number</label>
+                 <input type="text" id="e-wallet-number" class="form-control" placeholder="09xxxxxxxxx"
+                    pattern="^09\d{9}$" value="<?php echo $_SESSION['customer_number']; ?>">
+              </div>
 
-                  <!-- Contact Number -->
-                  <div>
-                     <label for="contact-number" class="form-label fw-semibold">Contact Number</label>
-                     <input type="text" id="contact-number" class="form-control" placeholder="09xxxxxxxxx"
-                        pattern="^09\d{9}$" value="<?php echo $_SESSION['customer_number']; ?>" required>
-                  </div>
+              <div class="text-center mt-3">
+                 <button type="submit" class="btn btn-outline-success px-4 fw-semibold">
+                    🛒 Place Order
+                 </button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
 
-                  <!-- E-Wallet Number (Hidden unless GCash is chosen) -->
-                  <div id="e-wallet-section" style="display: none;">
-                     <label for="e-wallet-number" class="form-label fw-semibold">E-Wallet Number</label>
-                     <input type="text" id="e-wallet-number" class="form-control" placeholder="09xxxxxxxxx"
-                        pattern="^09\d{9}$" value="<?php echo $_SESSION['customer_number']; ?>">
-                  </div>
-
-                  <div class="text-center mt-3">
-                     <button type="submit" class="btn btn-outline-success px-4 fw-semibold">
-                        🛒 Place Order
-                     </button>
-                  </div>
-
-               </form>
-            </div>
-         </div>
-      </div>
    </div>
 
+   <script src="../jquery.js"></script>
+
+   <script src="../crud/js/create.js"></script>
+
+   <script src="../crud/js/fetch.js"></script>
+
+   <script src="../crud/js/event_listeners.js"></script>
+
+   <script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+   <script>
+      let customer_number = '<?php echo $_SESSION["customer_number"] ?>';
+
+      $("#form-checkout-order").submit(function (e) {
+         e.preventDefault();
+         let order_id = $("#order-id").val().trim();
+         let payment_method = $("#payment-method").val().trim();
+         let contact = $("#contact-number").val().trim();
+         let e_wallet = $("#e-wallet-number").val().trim();
+         checkout_order(order_id, payment_method, contact, e_wallet);
+      });
+
+      fetch_customer_orders();
+
+      window.addEventListener("pageshow", function (event) {
+         if (event.persisted) window.location.reload();
+      });
+   </script>
 
 </body>
 
 </html>
-
-<script src="../jquery.js"></script>
-<script src="../crud/js/create.js"></script>
-<script src="../crud/js/fetch.js"></script>
-<script src="../crud/js/event_listeners.js"></script>
-<script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-   let customer_number = '<?php echo $_SESSION["customer_number"] ?>';
-   
-   $("#form-checkout-order").submit(function(e) {
-      e.preventDefault();
-
-      let order_id = $("#order-id").val().trim();
-      let payment_method = $("#payment-method").val().trim();
-      let contact = $("#contact-number").val().trim();
-      let e_wallet = $("#e-wallet-number").val().trim();
-
-      checkout_order(order_id, payment_method, contact, e_wallet);
-   })
-
-   fetch_customer_orders();
-
-   window.addEventListener("pageshow", function (event) {
-      if (event.persisted) window.location.reload();
-   });
-</script>

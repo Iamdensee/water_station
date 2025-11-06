@@ -5,7 +5,6 @@ if (!isset($_SESSION["staff_id"])) {
    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +12,8 @@ if (!isset($_SESSION["staff_id"])) {
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Deliveries</title>
    <link rel="stylesheet" href="../styles/bootstrap-5.3.8-dist/css/bootstrap.min.css">
-
-   <!-- Google Fonts -->
    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Quicksand:wght@600&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
    <style>
       body {
@@ -109,63 +107,69 @@ if (!isset($_SESSION["staff_id"])) {
          font-family: 'Quicksand', sans-serif;
          font-weight: 600;
          margin-bottom: 2rem;
+         display: flex;
+         align-items: center;
+         gap: 10px;
       }
 
-      /* Delivery list cards */
-      ul#deliveries {
-         list-style: none;
-         padding: 0;
-         margin: 0;
-      }
-
-      ul#deliveries li {
+      /* Delivery Cards */
+      .delivery-card {
          background: rgba(255, 255, 255, 0.12);
          border-radius: 15px;
-         padding: 1.5rem;
+         padding: 1.25rem 1.5rem;
          margin-bottom: 1rem;
-         backdrop-filter: blur(12px);
-         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
-         flex-wrap: wrap;
-         transition: transform 0.3s ease, background 0.3s ease;
+         backdrop-filter: blur(10px);
+         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+         transition: all 0.3s ease;
       }
 
-      ul#deliveries li:hover {
+      .delivery-card:hover {
          background: rgba(255, 255, 255, 0.2);
          transform: translateY(-4px);
       }
 
-      .delivery-info {
-         flex: 1;
-         margin-right: 1rem;
+      .delivery-header {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         flex-wrap: wrap;
+         border-bottom: 1px solid rgba(255,255,255,0.2);
+         padding-bottom: 0.5rem;
+         margin-bottom: 0.75rem;
       }
 
-      .delivery-info p {
+      .delivery-header h5 {
          margin: 0;
-         font-size: 0.95rem;
-      }
-
-      .delivery-info p + p {
-         margin-top: 2px;
-      }
-
-      .delivery-info p:last-of-type {
-         margin-top: 10px;
+         font-weight: 600;
       }
 
       .delivery-status {
          font-weight: 600;
          text-transform: capitalize;
+         font-size: 0.9rem;
+         display: flex;
+         align-items: center;
+         gap: 5px;
       }
 
+      .status-pending { color: #f0ad4e; }
       .status-approved { color: #00bfff; }
       .status-delivered { color: #00b67a; }
       .status-cancelled { color: #ff4d4d; }
 
+      .delivery-info p {
+         margin: 0.25rem 0;
+         font-size: 0.95rem;
+         color: #dfe6ff;
+      }
+
+      .action-btns {
+         margin-top: 1rem;
+      }
+
       .action-btns button {
-         margin: 0.25rem;
+         border-radius: 8px;
+         font-size: 0.9rem;
       }
 
       @media (max-width: 992px) {
@@ -212,22 +216,22 @@ if (!isset($_SESSION["staff_id"])) {
    </div>
 
    <div class="main-content">
-      <h1>🚚 Ongoing & Completed Deliveries</h1>
-      <ul id="deliveries"></ul>
+      <h1><i class="bi bi-truck"></i> Deliveries Overview</h1>
+      <div id="deliveries"></div>
    </div>
+
+   <script src="../jquery.js"></script>
+   <script src="../crud/js/fetch.js"></script>
+   <script src="../crud/js/update.js"></script>
+   <script src="../crud/js/event_listeners.js"></script>
+   <script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+   <script>
+      fetch_deliveries();
+
+      window.addEventListener("pageshow", function (event) {
+         if (event.persisted) window.location.reload();
+      });
+   </script>
 </body>
 </html>
-
-<script src="../jquery.js"></script>
-<script src="../crud/js/fetch.js"></script>
-<script src="../crud/js/update.js"></script>
-<script src="../crud/js/event_listeners.js"></script>
-<script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-<script>
-   fetch_deliveries();
-
-   // Force reload when returning to page
-   window.addEventListener("pageshow", function (event) {
-      if (event.persisted) window.location.reload();
-   });
-</script>

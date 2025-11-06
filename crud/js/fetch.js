@@ -61,8 +61,13 @@ function fetch_customer_orders() {
       $("#orders").html(list);
 
       order.forEach(orders => {
-         if (orders.order_status === "Pending" || orders.order_status === "Out for Delivery") {
+         if (orders.order_status === "Pending" || orders.order_status === "Out for Delivery" || orders.order_status === "Delivered") {
             $(`.checkout-btn[data-order-id='${orders.order_id}']`).prop("disabled", true);
+            if (orders.order_status === "Delivered") {
+               $(`.cancel-btn[data-order-id='${orders.order_id}']`).prop("disabled", true);
+            } else {
+               $(`.cancel-btn[data-order-id='${orders.order_id}']`).prop("disabled", false);
+            }
          }
       });
    });
@@ -112,25 +117,43 @@ function fetch_deliveries() {
       let delivery_list = "";
 
       if (delivery.length > 0) {
-         delivery.forEach(deliveries => {
-            delivery_list +=
-               `<li>
-                  <h4> <strong>Order:</strong> ${deliveries.order_id} </h4>
-                  <p><strong>Customer:</strong> ${deliveries.customer_name}</p>
-                     <p><strong>Address:</strong> ${deliveries.delivery_address}</p>
-                     <p><strong>Total Price:</strong> ₱${deliveries.total_amount}</p>
-                     <p><strong>Payment Method:</strong> ${deliveries.payment_method}</p>
-                     <p><strong>Status:</strong> <span class="order-status status-pending">${deliveries.delivery_status}</span></p>
-                  </div>
-                  <div class="action-btns">
-                     <button class="btn btn-success btn-md mark-delivered-btn" data-delivery-id="${deliveries.delivery_id}" data-order-id="${deliveries.order_id}"> Mark as Delivered </button>
-                  </div>
-               </li>`
+   let delivery_list = "";
+   delivery.forEach(deliveries => {
+      let statusIcon = "";
+      let statusClass = deliveries.delivery_status.toLowerCase();
 
-         });
-         $("#deliveries").html(delivery_list);
-         
-         delivery.forEach(deliveries=> {
+      // Pick icon depending on status
+      if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split text-warning"></i>`;
+      else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle text-info"></i>`;
+      else if (statusClass === "delivered") statusIcon = `<i class="bi bi-truck text-success"></i>`;
+      else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle text-danger"></i>`;
+
+      delivery_list += `
+         <div class="delivery-card">
+            <div class="delivery-header">
+               <h5><i class="bi bi-box-seam"></i> Order #${deliveries.order_id}</h5>
+               <span class="delivery-status status-${statusClass}">
+                  ${statusIcon} ${deliveries.delivery_status}
+               </span>
+            </div>
+            <div class="delivery-info">
+               <p><strong>Customer:</strong> ${deliveries.customer_name}</p>
+               <p><strong>Address:</strong> ${deliveries.delivery_address}</p>
+               <p><strong>Total Price:</strong> ₱${deliveries.total_amount}</p>
+               <p><strong>Payment Method:</strong> ${deliveries.payment_method}</p>
+            </div>
+            <div class="action-btns">
+               <button class="btn btn-success btn-sm mark-delivered-btn" 
+                  data-delivery-id="${deliveries.delivery_id}" 
+                  data-order-id="${deliveries.order_id}">
+                  <i class="bi bi-check2-circle"></i> Mark as Delivered
+               </button>
+            </div>
+         </div>`;
+   });
+   $("#deliveries").html(delivery_list);
+
+         delivery.forEach(deliveries => {
             if (deliveries.delivery_status === "Delivered") {
                $(`.mark-delivered-btn[data-delivery-id='${deliveries.delivery_id}']`).prop("disabled", true);
             }
@@ -139,7 +162,9 @@ function fetch_deliveries() {
       } else {
          delivery_list =
             `<li>
-               <p> No more ongoing deliveries </p>
+               <div class="delivery-card">
+                  No ongoing deliveries
+               </div>
             </li>`
          $("#deliveries").html(delivery_list);
       }
