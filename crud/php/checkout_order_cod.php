@@ -38,7 +38,7 @@ if (
       ":total_amount" => $total_amount["quantity"] * $total_amount["price_per_unit"],
    ]);
 
-   $update_order_status = $conn -> prepare("UPDATE orders SET status = :status WHERE order_id =:order_id");
+   $update_order_status = $conn -> prepare("UPDATE orders SET order_status = :status WHERE order_id =:order_id");
    $update_order_status -> execute([
       ":status" => "Pending",
       ":order_id" => $order_id,

@@ -14,7 +14,7 @@ if (
    !empty($quantity)
 ) {
    $stmt = $conn->prepare("INSERT INTO orders(
-   customer_id, station_id, delivery_address, quantity, date_time_ordered, status
+   customer_id, station_id, delivery_address, quantity, date_time_ordered, order_status
    ) VALUES(
    :customer_id, :station_id, :delivery_address, :quantity, :date_time_ordered, :status
    )");
@@ -31,6 +31,4 @@ if (
 } else {
    echo "Fill all fields";
 }
-
-
 ?>

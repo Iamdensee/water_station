@@ -9,7 +9,7 @@ FROM orders o
 INNER JOIN stations as s ON o.station_id = s.station_id
 INNER JOIN customers as c ON c.customer_id = o.customer_id
 INNER JOIN payment as p ON p.order_id = o.order_id
-WHERE s.station_id =:station_id AND o.status = 'Pending'
+WHERE s.station_id =:station_id AND o.order_status = 'Pending'
 
 ");
 $stmt -> execute([

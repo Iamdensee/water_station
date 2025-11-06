@@ -24,7 +24,7 @@ if (
    !empty($order_id) &&
    !empty($delivery_date_time)
 ) {
-   $stmt = $conn->prepare("INSERT INTO delivery(order_id, staff_id, delivery_date_time, status) VALUES(:order_id, :staff_id, :delivery_date_time, :status)");
+   $stmt = $conn->prepare("INSERT INTO delivery(order_id, staff_id, delivery_date_time, delivery_status) VALUES(:order_id, :staff_id, :delivery_date_time, :status)");
    $stmt->execute([
       ":order_id" => $order_id,
       ":staff_id" => $staff_id,
@@ -32,7 +32,7 @@ if (
       ":status" => "Out for Delivery",
    ]);
 
-   $update_order_status = $conn->prepare("UPDATE orders SET status = :status WHERE order_id =:order_id");
+   $update_order_status = $conn->prepare("UPDATE orders SET order_status = :status WHERE order_id =:order_id");
    $update_order_status->execute([
       ":status" => "Out for Delivery",
       ":order_id" => $order_id,

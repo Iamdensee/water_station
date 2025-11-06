@@ -46,7 +46,7 @@ function fetch_customer_orders() {
                      <p>🧃 Quantity: <b>${orders.quantity}</b></p>
                      <p>💰 Total Price: ₱${orders.price_per_unit * orders.quantity}</p>
                      <p>📅 Date and Time Ordered: ${orders.date_time_ordered}</p>
-                     <p>⏳ Status: ${orders.status}</p>
+                     <p>⏳ Status: ${orders.order_status}</p>
                      <button class="btn btn-outline-success text-white checkout-btn" 
                         data-bs-toggle="modal" 
                         data-bs-target="#checkout_order"
@@ -61,7 +61,7 @@ function fetch_customer_orders() {
       $("#orders").html(list);
 
       order.forEach(orders => {
-         if (orders.status === "Pending" || orders.status === "Out for Delivery") {
+         if (orders.order_status === "Pending" || orders.order_status === "Out for Delivery") {
             $(`.checkout-btn[data-order-id='${orders.order_id}']`).prop("disabled", true);
          }
       });
@@ -84,7 +84,7 @@ function fetch_pending_orders() {
                      <p><strong>Address:</strong> ${pending_orders.address}</p>
                      <p><strong>Total Price:</strong> ₱${pending_orders.total_amount}</p>
                      <p><strong>Payment Method:</strong> ${pending_orders.payment_method}</p>
-                     <p><strong>Status:</strong> <span class="order-status status-pending">${pending_orders.status}</span></p>
+                     <p><strong>Status:</strong> <span class="order-status status-pending">${pending_orders.order_status}</span></p>
                   </div>
                   <div class="action-btns">
                      <button class="btn btn-success btn-md deliver-btn" data-order-id="${pending_orders.order_id}">Deliver</button>
@@ -107,7 +107,42 @@ function fetch_pending_orders() {
 
 
 function fetch_deliveries() {
-   $.get("", function(response) {
-      alert(response);
+   $.get("../crud/php/fetch_delivery.php", function (response) {
+      let delivery = JSON.parse(response);
+      let delivery_list = "";
+
+      if (delivery.length > 0) {
+         delivery.forEach(deliveries => {
+            delivery_list +=
+               `<li>
+                  <h4> <strong>Order:</strong> ${deliveries.order_id} </h4>
+                  <p><strong>Customer:</strong> ${deliveries.customer_name}</p>
+                     <p><strong>Address:</strong> ${deliveries.delivery_address}</p>
+                     <p><strong>Total Price:</strong> ₱${deliveries.total_amount}</p>
+                     <p><strong>Payment Method:</strong> ${deliveries.payment_method}</p>
+                     <p><strong>Status:</strong> <span class="order-status status-pending">${deliveries.delivery_status}</span></p>
+                  </div>
+                  <div class="action-btns">
+                     <button class="btn btn-success btn-md mark-delivered-btn" data-delivery-id="${deliveries.delivery_id}" data-order-id="${deliveries.order_id}"> Mark as Delivered </button>
+                  </div>
+               </li>`
+
+         });
+         $("#deliveries").html(delivery_list);
+         
+         delivery.forEach(deliveries=> {
+            if (deliveries.delivery_status === "Delivered") {
+               $(`.mark-delivered-btn[data-delivery-id='${deliveries.delivery_id}']`).prop("disabled", true);
+            }
+         });
+
+      } else {
+         delivery_list =
+            `<li>
+               <p> No more ongoing deliveries </p>
+            </li>`
+         $("#deliveries").html(delivery_list);
+      }
+
    })
 }

@@ -199,7 +199,7 @@ if (!isset($_SESSION["staff_id"])) {
 <body>
    <div class="sidebar">
       <img src="https://cdn-icons-png.flaticon.com/512/1053/1053244.png" alt="Staff Profile">
-      <h4><?php echo htmlspecialchars($_SESSION["staff_name"]); ?></h4>
+      <h4><?php echo $_SESSION["staff_name"]; ?></h4>
 
       <ul class="nav-links">
          <li><a href="staff_dashboard.php" class="nav-link">🏠 Home</a></li>
@@ -219,9 +219,12 @@ if (!isset($_SESSION["staff_id"])) {
 </html>
 
 <script src="../jquery.js"></script>
+<script src="../crud/js/fetch.js"></script>
+<script src="../crud/js/update.js"></script>
+<script src="../crud/js/event_listeners.js"></script>
 <script src="../styles/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script>
-   // fetch_deliveries();
+   fetch_deliveries();
 
    // Force reload when returning to page
    window.addEventListener("pageshow", function (event) {

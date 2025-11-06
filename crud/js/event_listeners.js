@@ -16,7 +16,7 @@ $(document).on('click', '.order-btn', function () {
    $(document).on('click', '#quantity', function () {
       let quantity = $("#quantity").val();
       total_price_placeholder.html('<strong>Total Price: </strong>' + '₱' + price * quantity);
-   });
+   }); 
 
 
 });
@@ -43,4 +43,13 @@ $(document).on('click', '.deliver-btn', function() {
    let order_id = $(this).data("order-id");
 
    add_delivery(order_id);
+});
+
+
+//mark as delivered button
+$(document).on('click', '.mark-delivered-btn', function() {
+   let delivery_id = $(this).data("delivery-id");
+   let order_id = $(this).data("order-id");
+
+   mark_as_delivered(delivery_id, order_id);
 });

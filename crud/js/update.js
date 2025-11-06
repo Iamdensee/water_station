@@ -1,0 +1,10 @@
+function mark_as_delivered(delivery_id, order_id) {
+    $.post("../crud/php/mark_as_delivered.php", {delivery_id: delivery_id, order_id: order_id}, function(response) {
+        if (response === "udpated") {
+            alert("Order Delivered");
+            fetch_deliveries();
+        } else {
+            alert("Something Went Wrong");
+        }
+    })
+}
