@@ -166,6 +166,7 @@
                     <option value="selection">- Select A Role -</option>
                     <option value="customer">Customer</option>
                     <option value="staff">Staff</option>
+                    <option value="owner">Owner</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>

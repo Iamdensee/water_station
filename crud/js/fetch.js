@@ -117,18 +117,18 @@ function fetch_deliveries() {
       let delivery_list = "";
 
       if (delivery.length > 0) {
-   let delivery_list = "";
-   delivery.forEach(deliveries => {
-      let statusIcon = "";
-      let statusClass = deliveries.delivery_status.toLowerCase();
+         let delivery_list = "";
+         delivery.forEach(deliveries => {
+            let statusIcon = "";
+            let statusClass = deliveries.delivery_status.toLowerCase();
 
-      // Pick icon depending on status
-      if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split text-warning"></i>`;
-      else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle text-info"></i>`;
-      else if (statusClass === "delivered") statusIcon = `<i class="bi bi-truck text-success"></i>`;
-      else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle text-danger"></i>`;
+            // Pick icon depending on status
+            if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split text-warning"></i>`;
+            else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle text-info"></i>`;
+            else if (statusClass === "delivered") statusIcon = `<i class="bi bi-truck text-success"></i>`;
+            else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle text-danger"></i>`;
 
-      delivery_list += `
+            delivery_list += `
          <div class="delivery-card">
             <div class="delivery-header">
                <h5><i class="bi bi-box-seam"></i> Order #${deliveries.order_id}</h5>
@@ -150,8 +150,8 @@ function fetch_deliveries() {
                </button>
             </div>
          </div>`;
-   });
-   $("#deliveries").html(delivery_list);
+         });
+         $("#deliveries").html(delivery_list);
 
          delivery.forEach(deliveries => {
             if (deliveries.delivery_status === "Delivered") {
@@ -170,4 +170,51 @@ function fetch_deliveries() {
       }
 
    })
+}
+
+
+function dashboard_report() {
+   //revenue report
+   $.get("../crud/php/daily_revenue.php", function (response) {
+      if (response === "no rows") {
+         $("#revenue-placeholder").html("No sales yet");
+      } else {
+         let daily_revenue = JSON.parse(response);
+         $("#revenue-placeholder").html(`₱${daily_revenue.total_revenue}`);
+      }
+
+   });
+
+   // //stocks report
+   $.get("../crud/php/station_stocks.php", function (response) {
+      let stocks = JSON.parse(response);
+      $("#stocks-placeholder").html(`${stocks.stocks} stocks left`)
+   });
+
+   // //ongoing deliveries report
+   $.get("../crud/php/ongoing_deliveries.php", function (response) {
+      if (response === "no rows") {
+         $("#ongoing-deliveries-placeholder").html("No ongoing deliveries yet");
+      } else {
+         let ongoing_deliveries = JSON.parse(response);
+         $("#ongoing-deliveries-placeholder").html(ongoing_deliveries.length);
+      }
+
+
+   });
+
+   //delivered galloons report
+   $.get("../crud/php/delivered_galloons.php", function(response) {
+      if (response === "no rows") {
+         $("#delivered-placeholder").html("No delivered galloons yet");
+      } else {
+         let delivered = JSON.parse(response);
+         $("#delivered-placeholder").html(delivered.length);
+      }
+   });
+
+   // //pending orders report
+   // $.get("../", function(response) {
+   //    alert(response);
+   // });
 }

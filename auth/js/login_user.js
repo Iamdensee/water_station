@@ -10,13 +10,20 @@ function login_user(email, password, role) {
 
     } else if (role === "staff") {
         $.post("auth/php/login_staff.php", { email: email, password: password }, function (response) {
-            $.post("auth/php/login_staff.php", { email: email, password: password }, function (response) {
-                if (response === "granted") {
-                    window.location.href = "templates/staff_dashboard.php";
-                } else {
-                    alert(response);
-                }
-            });
+            if (response === "granted") {
+                window.location.href = "templates/staff_dashboard.php";
+            } else {
+                alert(response);
+            }
+        });
+
+    } else if (role === "owner") {
+        $.post("auth/php/login_owner.php", { email: email, password: password }, function (response) {
+            if (response === "granted") {
+                window.location.href = "templates/owner_dashboard.php";
+            } else {
+                alert(response);
+            }
         });
 
     } else {
