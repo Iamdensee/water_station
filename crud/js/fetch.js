@@ -74,6 +74,20 @@ function fetch_customer_orders() {
 }
 
 
+// function fetch_orders() {
+//    $.get("../crud/php/fetch_customer_orders.php", function(response) {
+//       let orders = JSON.parse(response);
+//       let display_orders = "";
+
+//       orders.forEach(order => {
+//          display_orders += <li>
+
+//          </li>
+//       })
+//    });
+// }
+
+
 function fetch_pending_orders() {
    $.get("../crud/php/fetch_pending_orders.php", function (response) {
       let pending_order = JSON.parse(response);
@@ -194,7 +208,7 @@ function dashboard_report() {
    // //ongoing deliveries report
    $.get("../crud/php/ongoing_deliveries.php", function (response) {
       if (response === "no rows") {
-         $("#ongoing-deliveries-placeholder").html("No ongoing deliveries yet");
+         $("#ongoing-deliveries-placeholder").html("No ongoing deliveries yet"); 
       } else {
          let ongoing_deliveries = JSON.parse(response);
          $("#ongoing-deliveries-placeholder").html(ongoing_deliveries.length);
@@ -214,7 +228,19 @@ function dashboard_report() {
    });
 
    // //pending orders report
-   // $.get("../", function(response) {
-   //    alert(response);
-   // });
+   $.get("../crud/php/pending_orders.php", function(response) {
+      if (response === "no rows") {
+         $("#pending-orders-placeholder").html("No pending orders yet");
+      } else {
+         let pending = JSON.parse(response);
+         $("#pending-orders-placeholder").html(pending.length);
+      }
+   });
+
+   //price per unit
+   $.get("../crud/php/fetch_stations.php", function(response) {
+      let price = JSON.parse(response);
+
+      $("#price-placeholder").html(price);
+   });
 }

@@ -62,3 +62,15 @@ function add_delivery(order_id) {
       }
    }) 
 }
+
+
+function add_stocks(quantity) {
+    $.post("../crud/php/add_stocks.php", {quantity: quantity}, function(response) {
+        if (response === "stock(s) added") {
+            alert("Stocks updated!");
+            dashboard_report();
+        } else {
+            alert("Fields must not be empty!");
+        }
+    });
+}

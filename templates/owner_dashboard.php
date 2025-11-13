@@ -15,10 +15,10 @@ if (!isset($_SESSION["owner_id"])) {
     <link rel="stylesheet" href="../styles/bootstrap-5.3.8-dist/css/bootstrap.min.css">
 </head>
 <body>
-    <a href="owner_dashboard"> Home </a>
-    <a href=""> Manage Station </a>
+    <a href="owner_dashboard.php"> Home </a>
+    <a href="owner_manage_station.php"> Manage Station </a>
     <a href=""> Manage Staffs </a>
-    <a href=""> View Orders </a>
+    <a href="owner_view_orders.php"> View Orders </a>
     <a href=""> View Deliveries </a>
     <a href="../auth/php/logout.php"> Logout </a>
 
