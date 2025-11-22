@@ -174,6 +174,8 @@
 
         <div class="signup-link">
             <p>No account yet? <a href="signup.php">Sign Up Here</a></p>
+            <p>New or Existing Stations? <a href="apply_owner.php">Register your station</a></p>
+            <p>Join The Crew! <a href="apply_staff.php">Be a staff member</a></p>
         </div>
     </div>
 

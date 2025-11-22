@@ -53,3 +53,35 @@ $(document).on('click', '.mark-delivered-btn', function() {
 
    mark_as_delivered(delivery_id, order_id);
 });
+
+
+//fire button
+$(document).on('click', '.fire-btn', function() {
+   let staff_id = $(this).data("staff-id");
+
+   fire_staffs(staff_id);
+})
+
+
+//accept staff application
+$(document).on('click', '.approve-staff-btn', function() {
+   let application = $(this).data("application-id");
+   let first_name = $(this).data("first-name");
+   let middle_name = $(this).data("middle-name");
+   let last_name = $(this).data("last-name");
+   let contact_number = $(this).data("contact-number");
+   let email = $(this).data("email");
+   let station_id = $(this).data("station-id");
+
+   approve_staff(application, first_name, middle_name, last_name, contact_number, email, station_id);
+})
+
+
+//decline staff application
+$(document).on('click', '.decline-staff-btn', function() {
+   let application_id = $(this).data("application-id");
+   let fname = $(this).data("first-name");
+   let email = $(this).data("email");
+
+   decline_staff(application_id, fname, email);
+});

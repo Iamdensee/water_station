@@ -16,6 +16,4 @@ if (!empty($new_price)) {
     echo "Price must not be empty";
 }
 
-
-
 ?>

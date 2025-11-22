@@ -18,9 +18,9 @@ if (!isset($_SESSION["owner_id"])) {
 <body>
     <a href="owner_dashboard.php"> Home </a>
     <a href="owner_manage_station.php"> Manage Station </a>
-    <a href=""> Manage Staffs </a>
+    <a href="owner_manage_staffs.php"> Manage Staffs </a>
     <a href="owner_view_orders.php"> View Orders </a>
-    <a href=""> View Deliveries </a>
+    <a href="owner_view_deliveries.php"> View Deliveries </a>
     <a href="../auth/php/logout.php"> Logout </a>
 
     <h4> Orders </h4>

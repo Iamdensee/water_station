@@ -1,35 +1,37 @@
 <?php
-session_start();
 include_once "../../connection.php";
 
-//customer view
-if (isset($_SESSION["customer_id"])) {
-   $customer_id = $_SESSION["customer_id"];
-   $stmt = $conn->prepare("SELECT * 
-FROM orders o
-INNER JOIN stations as s ON o.station_id = s.station_id
-WHERE customer_id =:customer_id
+$fname = $_POST["fname"];
+$mname = $_POST["mname"];
+$lname = $_POST["lname"];
+$address = $_POST["address"];
+$contact_number = $_POST["contact_number"];
+$email = $_POST["email"];
+$station = $_POST["station"];
 
-");
+if (
+   !empty($fname) &&
+   !empty($mname) &&
+   !empty($lname) &&
+   !empty($contact_number) &&
+   !empty($email) &&
+   !empty($station)
+) {
+   $stmt = $conn->prepare("INSERT INTO staff_applications(
+   first_name, middle_name, last_name, contact, email, station_name
+   ) VALUES(:fname, :mname, :lname, :contact, :email, :station_name)");
+
    $stmt->execute([
-      ":customer_id" => $customer_id
+      ":fname" => $fname,
+      ":mname" => $mname,
+      ":lname" => $lname,
+      ":contact" => $contact_number,
+      ":email" => $email,
+      ":station_name" => $station,
    ]);
 
-   $customer_order = $stmt->fetchAll(PDO::FETCH_ASSOC);
-   echo json_encode($customer_order);
-
-//onwer view
+   echo "applied";
 } else {
-   $station_id = $_SESSION["owner_station"];
-   $order = $conn->prepare("SELECT * 
-FROM orders o
-INNER JOIN stations as s ON o.station_id = s.station_id
-WHERE s.station_id =:station_id ");
-   $order->execute([
-      ":station_id" => $station_id
-   ]);
-   $orders = $order -> fetchAll(PDO::FETCH_ASSOC);
-   echo json_encode($orders);
+   echo "Please fill up all fields";
 }
-
 ?>

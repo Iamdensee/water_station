@@ -29,6 +29,32 @@ function fetch_stations() {
 }
 
 
+function apply_stations() {
+   $.get("crud/php/apply_station.php", function (response) {
+      let station = JSON.parse(response);
+      let station_placeholder = $("#stations");
+      let display_station = "";
+
+      station.forEach((stations) => {
+         display_station += `
+               <li>
+                  <strong style="font-size: 1.2rem;">${stations.station_name}</strong>
+
+                  <button class="btn apply-btn btn-primary"
+                     data-bs-toggle="modal"
+                     data-bs-target="#apply"
+                     data-station-id="${stations.station_id}">
+                     Apply
+                  </button>
+               </li>`;
+      });
+
+      station_placeholder.html(display_station);
+   });
+}
+
+
+
 function fetch_customer_orders() {
    $.get("../crud/php/fetch_customer_orders.php", function (response) {
       let order = JSON.parse(response);
@@ -74,18 +100,24 @@ function fetch_customer_orders() {
 }
 
 
-// function fetch_orders() {
-//    $.get("../crud/php/fetch_customer_orders.php", function(response) {
-//       let orders = JSON.parse(response);
-//       let display_orders = "";
+function fetch_orders() {
+   $.get("../crud/php/fetch_customer_orders.php", function (response) {
+      let orders = JSON.parse(response);
+      let display_orders = "";
 
-//       orders.forEach(order => {
-//          display_orders += <li>
-
-//          </li>
-//       })
-//    });
-// }
+      orders.forEach(order => {
+         display_orders += `<li>
+            <strong>${order.station_name}</strong>
+            <p>💰 Price per unit: ₱${order.price_per_unit}</p>
+            <p>🧃 Quantity: <b>${order.quantity}</b></p>
+            <p>💰 Total Price: ₱${order.price_per_unit * order.quantity}</p>
+            <p>📅 Date and Time Ordered: ${order.date_time_ordered}</p>
+            <p>⏳ Status: ${order.order_status}</p>
+         </li>`
+      })
+      $("#orders-list").html(display_orders);
+   });
+}
 
 
 function fetch_pending_orders() {
@@ -187,6 +219,61 @@ function fetch_deliveries() {
 }
 
 
+function fetch_owner_deliveries() {
+   $.get("../crud/php/fetch_delivery.php", function (response) {
+      let delivery = JSON.parse(response);
+      let delivery_list = "";
+
+      if (delivery.length > 0) {
+         let delivery_list = "";
+         delivery.forEach(deliveries => {
+            let statusIcon = "";
+            let statusClass = deliveries.delivery_status.toLowerCase();
+
+            // Pick icon depending on status
+            if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split text-warning"></i>`;
+            else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle text-info"></i>`;
+            else if (statusClass === "delivered") statusIcon = `<i class="bi bi-truck text-success"></i>`;
+            else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle text-danger"></i>`;
+
+            delivery_list += `
+         <div class="delivery-card">
+            <div class="delivery-header">
+               <h5><i class="bi bi-box-seam"></i> Order #${deliveries.order_id}</h5>
+               <span class="delivery-status status-${statusClass}">
+                  ${statusIcon} ${deliveries.delivery_status}
+               </span>
+            </div>
+            <div class="delivery-info">
+               <p><strong>Customer:</strong> ${deliveries.customer_name}</p>
+               <p><strong>Address:</strong> ${deliveries.delivery_address}</p>
+               <p><strong>Total Price:</strong> ₱${deliveries.total_amount}</p>
+               <p><strong>Payment Method:</strong> ${deliveries.payment_method}</p>
+            </div>
+         </div>`;
+         });
+         $("#deliveries").html(delivery_list);
+
+         delivery.forEach(deliveries => {
+            if (deliveries.delivery_status === "Delivered") {
+               $(`.mark-delivered-btn[data-delivery-id='${deliveries.delivery_id}']`).prop("disabled", true);
+            }
+         });
+
+      } else {
+         delivery_list =
+            `<li>
+               <div class="delivery-card">
+                  No ongoing deliveries
+               </div>
+            </li>`
+         $("#deliveries").html(delivery_list);
+      }
+
+   })
+}
+
+
 function dashboard_report() {
    //revenue report
    $.get("../crud/php/daily_revenue.php", function (response) {
@@ -208,7 +295,7 @@ function dashboard_report() {
    // //ongoing deliveries report
    $.get("../crud/php/ongoing_deliveries.php", function (response) {
       if (response === "no rows") {
-         $("#ongoing-deliveries-placeholder").html("No ongoing deliveries yet"); 
+         $("#ongoing-deliveries-placeholder").html("No ongoing deliveries yet");
       } else {
          let ongoing_deliveries = JSON.parse(response);
          $("#ongoing-deliveries-placeholder").html(ongoing_deliveries.length);
@@ -218,7 +305,7 @@ function dashboard_report() {
    });
 
    //delivered galloons report
-   $.get("../crud/php/delivered_galloons.php", function(response) {
+   $.get("../crud/php/delivered_galloons.php", function (response) {
       if (response === "no rows") {
          $("#delivered-placeholder").html("No delivered galloons yet");
       } else {
@@ -228,7 +315,7 @@ function dashboard_report() {
    });
 
    // //pending orders report
-   $.get("../crud/php/pending_orders.php", function(response) {
+   $.get("../crud/php/pending_orders.php", function (response) {
       if (response === "no rows") {
          $("#pending-orders-placeholder").html("No pending orders yet");
       } else {
@@ -238,9 +325,57 @@ function dashboard_report() {
    });
 
    //price per unit
-   $.get("../crud/php/fetch_stations.php", function(response) {
+   $.get("../crud/php/fetch_stations.php", function (response) {
       let price = JSON.parse(response);
 
       $("#price-placeholder").html(price);
+   });
+}
+
+
+function fetch_staffs() {
+   $.get("../crud/php/fetch_staffs.php", function (response) {
+      let staffs = JSON.parse(response);
+      let display_staffs = "";
+
+      staffs.forEach((staff, index) => {
+         display_staffs += `<tr>
+            <td>${index + 1}</td>
+            <td>${staff.staff_name}</td>
+            <td>
+               <button class="btn btn-sm btn-outline-danger fire-btn" 
+               data-staff-id="${staff.staff_id}"> Fire </button>
+            </td>
+         </tr>`
+      });
+      $("#staffs-table").html(display_staffs);
+   });
+}
+
+
+function fetch_pending_applications() {
+   $.get("../crud/php/fetch_pending_applications.php", function (response) {
+      let applications = JSON.parse(response);
+      let display_applications = "";
+
+      applications.forEach((staff, index) => {
+         display_applications += `<tr>
+            <td> ${index + 1} </td>
+            <td> ${staff.name} </td>
+            <td> <button class="btn btn-sm btn-outline-success approve-staff-btn" 
+            data-application-id="${staff.application_id}"
+            data-first-name="${staff.first_name}"
+            data-middle-name="${staff.middle_name}"
+            data-last-name="${staff.last_name}"
+            data-contact-number="${staff.contact_number}"
+            data-email="${staff.email}"
+            data-station-id="${staff.station_id}"> Approve </button>
+            <td> <button class="btn btn-sm btn-outline-danger decline-staff-btn" 
+            data-application-id="${staff.application_id}"
+            data-first-name="${staff.first_name}"
+            data-email="${staff.email}"> Decline </button> </td>
+         </tr>`
+      });
+      $("#pending-staffs-table").html(display_applications);
    });
 }
