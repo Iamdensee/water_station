@@ -106,15 +106,37 @@ function fetch_orders() {
       let display_orders = "";
 
       orders.forEach(order => {
-         display_orders += `<li>
-            <strong>${order.station_name}</strong>
-            <p>💰 Price per unit: ₱${order.price_per_unit}</p>
-            <p>🧃 Quantity: <b>${order.quantity}</b></p>
-            <p>💰 Total Price: ₱${order.price_per_unit * order.quantity}</p>
-            <p>📅 Date and Time Ordered: ${order.date_time_ordered}</p>
-            <p>⏳ Status: ${order.order_status}</p>
-         </li>`
-      })
+
+         let statusClass = order.order_status.toLowerCase();
+         let statusIcon = "";
+
+         // Choose icons for statuses
+         if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split"></i>`;
+         else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle"></i>`;
+         else if (statusClass === "preparing") statusIcon = `<i class="bi bi-gear"></i>`;
+         else if (statusClass === "completed") statusIcon = `<i class="bi bi-bag-check"></i>`;
+         else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle"></i>`;
+
+         display_orders += `
+                <div class="order-card">
+                    <div class="order-header">
+                        <h5><i class="bi bi-shop"></i> ${order.station_name}</h5>
+
+                        <span class="order-status status-${statusClass}">
+                            ${statusIcon} ${order.order_status}
+                        </span>
+                    </div>
+
+                    <div class="order-info mt-2">
+                        <p><strong>Price Per Unit:</strong> ₱${order.price_per_unit}</p>
+                        <p><strong>Quantity:</strong> ${order.quantity}</p>
+                        <p><strong>Total Price:</strong> ₱${order.price_per_unit * order.quantity}</p>
+                        <p><strong>Date Ordered:</strong> ${order.date_time_ordered}</p>
+                    </div>
+                </div>
+            `;
+      });
+
       $("#orders-list").html(display_orders);
    });
 }
@@ -225,52 +247,44 @@ function fetch_owner_deliveries() {
       let delivery_list = "";
 
       if (delivery.length > 0) {
-         let delivery_list = "";
-         delivery.forEach(deliveries => {
-            let statusIcon = "";
-            let statusClass = deliveries.delivery_status.toLowerCase();
 
-            // Pick icon depending on status
-            if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split text-warning"></i>`;
-            else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle text-info"></i>`;
-            else if (statusClass === "delivered") statusIcon = `<i class="bi bi-truck text-success"></i>`;
-            else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle text-danger"></i>`;
+         delivery.forEach(deliveries => {
+            let statusClass = deliveries.delivery_status.toLowerCase();
+            let statusIcon = "";
+
+            if (statusClass === "pending") statusIcon = `<i class="bi bi-hourglass-split"></i>`;
+            else if (statusClass === "approved") statusIcon = `<i class="bi bi-check-circle"></i>`;
+            else if (statusClass === "delivered") statusIcon = `<i class="bi bi-truck"></i>`;
+            else if (statusClass === "cancelled") statusIcon = `<i class="bi bi-x-circle"></i>`;
 
             delivery_list += `
-         <div class="delivery-card">
-            <div class="delivery-header">
-               <h5><i class="bi bi-box-seam"></i> Order #${deliveries.order_id}</h5>
-               <span class="delivery-status status-${statusClass}">
-                  ${statusIcon} ${deliveries.delivery_status}
-               </span>
-            </div>
-            <div class="delivery-info">
-               <p><strong>Customer:</strong> ${deliveries.customer_name}</p>
-               <p><strong>Address:</strong> ${deliveries.delivery_address}</p>
-               <p><strong>Total Price:</strong> ₱${deliveries.total_amount}</p>
-               <p><strong>Payment Method:</strong> ${deliveries.payment_method}</p>
-            </div>
-         </div>`;
-         });
-         $("#deliveries").html(delivery_list);
+                <div class="delivery-card">
+                    <div class="delivery-header">
+                        <h5><i class="bi bi-box-seam"></i> Order #${deliveries.order_id}</h5>
 
-         delivery.forEach(deliveries => {
-            if (deliveries.delivery_status === "Delivered") {
-               $(`.mark-delivered-btn[data-delivery-id='${deliveries.delivery_id}']`).prop("disabled", true);
-            }
+                        <span class="delivery-status status-${statusClass}">
+                            ${statusIcon} ${deliveries.delivery_status}
+                        </span>
+                    </div>
+
+                    <div class="delivery-info mt-2">
+                        <p><strong>Customer:</strong> ${deliveries.customer_name}</p>
+                        <p><strong>Address:</strong> ${deliveries.delivery_address}</p>
+                        <p><strong>Total Price:</strong> ₱${deliveries.total_amount}</p>
+                        <p><strong>Payment Method:</strong> ${deliveries.payment_method}</p>
+                    </div>
+                </div>`;
          });
 
       } else {
-         delivery_list =
-            `<li>
-               <div class="delivery-card">
-                  No ongoing deliveries
-               </div>
-            </li>`
-         $("#deliveries").html(delivery_list);
+         delivery_list = `
+                <div class="delivery-card text-center">
+                    No ongoing deliveries.
+                </div>`;
       }
 
-   })
+      $("#deliveries").html(delivery_list);
+   });
 }
 
 
